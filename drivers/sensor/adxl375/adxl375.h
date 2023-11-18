@@ -133,76 +133,71 @@
 #define ADXL375_MEASURE_BANDWIDTH_MSK		GENMASK(2, 0)
 #define ADXL375_MEASURE_BANDWIDTH_MODE(x)	(((x) & 0x7) << 0)
 
-/* ADXL375_TIMING */
-#define ADXL375_TIMING_ODR_MSK			GENMASK(7, 5)
-#define ADXL375_TIMING_ODR_MODE(x)		(((x) & 0x7) << 5)
-#define ADXL375_TIMING_WAKE_UP_RATE_MSK		GENMASK(4, 2)
-#define ADXL375_TIMING_WAKE_UP_RATE_MODE(x)	(((x) & 0x7) << 2)
-#define ADXL375_TIMING_EXT_CLK_MSK		BIT(1)
-#define ADXL375_TIMING_EXT_CLK_MODE(x)		(((x) & 0x1) << 1)
-#define ADXL375_TIMING_EXT_SYNC_MSK		BIT(0)
-#define ADXL375_TIMING_EXT_SYNC_MODE(x)		(((x) & 0x1) << 0)
+/* ADXL375_INT_ENABLE */
+#define ADXL375_INT_ENABLE_DATA_READY_MSK        BIT(7)
+#define ADXL375_INT_ENABLE_SINGLE_SHOCK_MSK      BIT(6)
+#define ADXL375_INT_ENABLE_DOUBLE_SHOCK_MSK      BIT(5)
+#define ADXL375_INT_ENABLE_ACTIVITY_MSK          BIT(4)
+#define ADXL375_INT_ENABLE_INACTIVITY_MSK        BIT(3)
+#define ADXL375_INT_ENABLE_WATERMARK_MSK         BIT(1)
+#define ADXL375_INT_ENABLE_OVERRUN_MSK           BIT(0)
+
+#define ADXL375_INT_ENABLE_DATA_READY_MODE(x)        (((x) & 0x1) << 7)
+#define ADXL375_INT_ENABLE_SINGLE_SHOCK_MODE(x)      (((x) & 0x1) << 6)
+#define ADXL375_INT_ENABLE_DOUBLE_SHOCK_MODE(x)      (((x) & 0x1) << 5)
+#define ADXL375_INT_ENABLE_ACTIVITY_MODE(x)          (((x) & 0x1) << 4)
+#define ADXL375_INT_ENABLE_INACTIVITY_MODE(x)        (((x) & 0x1) << 3)
+#define ADXL375_INT_ENABLE_WATERMARK_MODE(x)         (((x) & 0x1) << 1)
+#define ADXL375_INT_ENABLE_OVERRUN_MODE(x)           (((x) & 0x1) << 0)
+
+/* ADXL375_INT_MAP */
+#define ADXL375_INT_MAP_DATA_READY_MSK        BIT(7)
+#define ADXL375_INT_MAP_SINGLE_SHOCK_MSK      BIT(6)
+#define ADXL375_INT_MAP_DOUBLE_SHOCK_MSK      BIT(5)
+#define ADXL375_INT_MAP_ACTIVITY_MSK          BIT(4)
+#define ADXL375_INT_MAP_INACTIVITY_MSK        BIT(3)
+#define ADXL375_INT_MAP_WATERMARK_MSK         BIT(1)
+#define ADXL375_INT_MAP_OVERRUN_MSK           BIT(0)
+
+#define ADXL375_INT_MAP_DATA_READY_MODE(x)        (((x) & 0x1) << 7)
+#define ADXL375_INT_MAP_SINGLE_SHOCK_MODE(x)      (((x) & 0x1) << 6)
+#define ADXL375_INT_MAP_DOUBLE_SHOCK_MODE(x)      (((x) & 0x1) << 5)
+#define ADXL375_INT_MAP_ACTIVITY_MODE(x)          (((x) & 0x1) << 4)
+#define ADXL375_INT_MAP_INACTIVITY_MODE(x)        (((x) & 0x1) << 3)
+#define ADXL375_INT_MAP_WATERMARK_MODE(x)         (((x) & 0x1) << 1)
+#define ADXL375_INT_MAP_OVERRUN_MODE(x)           (((x) & 0x1) << 0)
+
+/* ADXL375_INT_SOURCE */
+#define ADXL375_INT_DATA_READY_SRC(x)        (((x) >> 7) & 0x1)
+#define ADXL375_INT_SINGLE_SHOCK_SRC(x)      (((x) >> 6) & 0x1)
+#define ADXL375_INT_DOUBLE_SHOCK_SRC(x)      (((x) >> 5) & 0x1)
+#define ADXL375_INT_ACTIVITY_SRC(x)          (((x) >> 4) & 0x1)
+#define ADXL375_INT_INACTIVITY_SRC(x)        (((x) >> 3) & 0x1)
+#define ADXL375_INT_WATERMARK_SRC(x)         (((x) >> 1) & 0x1)
+#define ADXL375_INT_OVERRUN_SRC(x)           (((x) >> 0) & 0x1)
+
+/* ADX375_DATA_FORMAT */
+#define ADXL375_FORMAT_SELF_TEST_MSK        BIT(7)
+#define ADXL375_FORMAT_SPI_MSK              BIT(6)
+#define ADXL375_FORMAT_INT_INVERT_MSK       BIT(5)
+#define ADXL375_FORMAT_JUSTIFY_MSK          BIT(2)
+
+#define ADXL375_FORMAT_SELF_TEST_MODE(x)    (((x) & 0x1) << 7)
+#define ADXL375_FORMAT_SPI_MODE(x)          (((x) & 0x1) << 6)
+#define ADXL375_FORMAT_INT_INVERT_MODE(x)   (((x) & 0x1) << 5)
+#define ADXL375_FORMAT_JUSTIFY_MODE(x)      (((x) & 0x1) << 2)
+
 
 /* ADXL375_FIFO_CTL */
-#define ADXL375_FIFO_CTL_FORMAT_MSK		GENMASK(5, 3)
-#define ADXL375_FIFO_CTL_FORMAT_MODE(x)		(((x) & 0x7) << 3)
-#define ADXL375_FIFO_CTL_MODE_MSK		GENMASK(2, 1)
-#define ADXL375_FIFO_CTL_MODE_MODE(x)		(((x) & 0x3) << 1)
-#define ADXL375_FIFO_CTL_SAMPLES_MSK		BIT(0)
-#define ADXL375_FIFO_CTL_SAMPLES_MODE(x)	(((x) > 0xFF) ? 1 : 0)
+#define ADXL375_FIFO_CTL_FIFO_MODE_MSK		GENMASK(7, 5)
+#define ADXL375_FIFO_CTL_TRIGGER_MSK		BIT(5)
+#define ADXL375_FIFO_CTL_SAMPLES_MSK		GENMASK(4, 0)
 
-/* ADXL375_STATUS_1 */
-#define ADXL375_STATUS_1_DATA_RDY(x)		(((x) >> 0) & 0x1)
-#define ADXL375_STATUS_1_FIFO_RDY(x)		(((x) >> 1) & 0x1)
-#define ADXL375_STATUS_1_FIFO_FULL(x)		(((x) >> 2) & 0x1)
-#define ADXL375_STATUS_1_FIFO_OVR(x)		(((x) >> 3) & 0x1)
-#define ADXL375_STATUS_1_USR_NVM_BUSY(x)	(((x) >> 5) & 0x1)
-#define ADXL375_STATUS_1_AWAKE(x)		(((x) >> 6) & 0x1)
-#define ADXL375_STATUS_1_ERR_USR_REGS(x)	(((x) >> 7) & 0x1)
 
-/* ADXL375_STATUS_2 */
-#define ADXL375_STATUS_2_INACT(x)		(((x) >> 4) & 0x1)
-#define ADXL375_STATUS_2_ACTIVITY(x)		(((x) >> 5) & 0x1)
-#define ADXL375_STATUS_2_ACTIVITY2(x)		(((x) >> 6) & 0x1)
+/* ADXL375_FIFO_STATUS */
 
-/* ADXL375_INT1_MAP */
-#define ADXL375_INT1_MAP_DATA_RDY_MSK		BIT(0)
-#define ADXL375_INT1_MAP_DATA_RDY_MODE(x)	(((x) & 0x1) << 0)
-#define ADXL375_INT1_MAP_FIFO_RDY_MSK		BIT(1)
-#define ADXL375_INT1_MAP_FIFO_RDY_MODE(x)	(((x) & 0x1) << 1)
-#define ADXL375_INT1_MAP_FIFO_FULL_MSK		BIT(2)
-#define ADXL375_INT1_MAP_FIFO_FULL_MODE(x)	(((x) & 0x1) << 2)
-#define ADXL375_INT1_MAP_FIFO_OVR_MSK		BIT(3)
-#define ADXL375_INT1_MAP_FIFO_OVR_MODE(x)	(((x) & 0x1) << 3)
-#define ADXL375_INT1_MAP_INACT_MSK		BIT(4)
-#define ADXL375_INT1_MAP_INACT_MODE(x)		(((x) & 0x1) << 4)
-#define ADXL375_INT1_MAP_ACT_MSK		BIT(5)
-#define ADXL375_INT1_MAP_ACT_MODE(x)		(((x) & 0x1) << 5)
-#define ADXL375_INT1_MAP_AWAKE_MSK		BIT(6)
-#define ADXL375_INT1_MAP_AWAKE_MODE(x)		(((x) & 0x1) << 6)
-#define ADXL375_INT1_MAP_LOW_MSK		BIT(7)
-#define ADXL375_INT1_MAP_LOW_MODE(x)		(((x) & 0x1) << 7)
-
-/* ADXL375_INT2_MAP */
-#define ADXL375_INT2_MAP_DATA_RDY_MSK		BIT(0)
-#define ADXL375_INT2_MAP_DATA_RDY_MODE(x)	(((x) & 0x1) << 0)
-#define ADXL375_INT2_MAP_FIFO_RDY_MSK		BIT(1)
-#define ADXL375_INT2_MAP_FIFO_RDY_MODE(x)	(((x) & 0x1) << 1)
-#define ADXL375_INT2_MAP_FIFO_FULL_MSK		BIT(2)
-#define ADXL375_INT2_MAP_FIFO_FULL_MODE(x)	(((x) & 0x1) << 2)
-#define ADXL375_INT2_MAP_FIFO_OVR_MSK		BIT(3)
-#define ADXL375_INT2_MAP_FIFO_OVR_MODE(x)	(((x) & 0x1) << 3)
-#define ADXL375_INT2_MAP_INACT_MSK		BIT(4)
-#define ADXL375_INT2_MAP_INACT_MODE(x)		(((x) & 0x1) << 4)
-#define ADXL375_INT2_MAP_ACT_MSK		BIT(5)
-#define ADXL375_INT2_MAP_ACT_MODE(x)		(((x) & 0x1) << 5)
-#define ADXL375_INT2_MAP_AWAKE_MSK		BIT(6)
-#define ADXL375_INT2_MAP_AWAKE_MODE(x)		(((x) & 0x1) << 6)
-#define ADXL375_INT2_MAP_LOW_MSK		BIT(7)
-#define ADXL375_INT2_MAP_LOW_MODE(x)		(((x) & 0x1) << 7)
 
 /* ADXL375_HPF */
-#define ADXL375_HPF_CORNER(x)			(((x) & 0x3) << 0)
 
 enum adxl375_axis {
 	ADXL375_X_AXIS,
