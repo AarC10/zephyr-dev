@@ -338,6 +338,10 @@ manifest:
       revision: 67fd8bb88d3136738661fa8bb5f9989103f4599e
       path: modules/lib/zcbor
 
+    - name: ubxlib
+      revision:
+
+
   self:
     path: zephyr
     west-commands: scripts/west-commands.yml

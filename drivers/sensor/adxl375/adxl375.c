@@ -151,60 +151,6 @@ static int adxl375_set_bandwidth(const struct device *dev,
 }
 
 /**
- * Select the desired high-pass filter corner.
- * @param dev - The device structure.
- * @param c - bandwidth.
- *		Accepted values: ADXL375_HPF_CORNER_0
- *				 ADXL375_HPF_CORNER_1
- *				 ADXL375_HPF_CORNER_2
- *				 ADXL375_HPF_CORNER_3
- *				 ADXL375_HPF_DISABLED
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_set_hpf_corner(const struct device *dev,
-				  enum adxl375_hpf_corner c)
-{
-
-	int ret;
-	uint8_t mask;
-	struct adxl375_data *data = dev->data;
-
-	if (c == ADXL375_HPF_DISABLED) {
-		mask = ADXL375_POWER_CTL_HPF_DIS_MSK;
-	} else {
-		mask = 0U;
-	}
-
-	ret = data->hw_tf->write_reg_mask(dev, ADXL375_POWER_CTL,
-					  ADXL375_POWER_CTL_HPF_DIS_MSK, mask);
-	if (ret) {
-		return ret;
-	}
-
-	return data->hw_tf->write_reg(dev, ADXL375_HPF, adxl375_HPF_CORNER(c));
-}
-
-
-/**
- * Link/Loop Activity Processing.
- * @param dev - The device structure.
- * @param mode - Mode of operation.
- *		Accepted values: ADXL375_DEFAULT
- *				 ADXL375_LINKED
- *				 ADXL375_LOOPED
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_set_act_proc_mode(const struct device *dev,
-				     enum adxl375_act_proc_mode mode)
-{
-	struct adxl375_data *data = dev->data;
-
-	return data->hw_tf->write_reg_mask(dev, ADXL375_MEASURE,
-					   ADXL375_MEASURE_LINKLOOP_MSK,
-					   ADXL375_MEASURE_LINKLOOP_MODE(mode));
-}
-
-/**
  * Set Output data rate.
  * @param dev - The device structure.
  * @param odr - Output data rate.

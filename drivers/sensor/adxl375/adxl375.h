@@ -213,55 +213,41 @@ enum adxl375_op_mode {
 };
 
 enum adxl375_bandwidth {
-	ADXL375_BW_200HZ,
-	ADXL375_BW_400HZ,
-	ADXL375_BW_800HZ,
-	ADXL375_BW_1600HZ,
-	ADXL375_BW_3200HZ,
-	ADXL375_BW_LPF_DISABLED = 0xC,
-};
-
-enum adxl375_hpf_corner {
-	ADXL375_HPF_CORNER_0,
-	ADXL375_HPF_CORNER_1,
-	ADXL375_HPF_CORNER_2,
-	ADXL375_HPF_CORNER_3,
-	ADXL375_HPF_DISABLED,
-};
-
-enum adxl375_act_proc_mode {
-	ADXL375_DEFAULT,
-	ADXL375_LINKED,
-	ADXL375_LOOPED
+    ADXL375_BW_0_05HZ,
+    ADXL375_BW_0_10HZ,
+    ADXL375_BW_0_20HZ,
+    ADXL375_BW_0_39HZ,
+    ADXL375_BW_0_78HZ,
+    ADXL375_BW_1_56HZ,
+    ADXL375_BW_3_13HZ,
+    ADXL375_BW_6_25HZ,
+    ADXL375_BW_12_5HZ,
+    ADXL375_BW_25HZ,
+    ADXL375_BW_50HZ,
+    ADXL375_BW_100HZ,
+    ADXL375_BW_200HZ,
+    ADXL375_BW_400HZ,
+    ADXL375_BW_800HZ,
+    ADXL375_BW_1600HZ
 };
 
 enum adxl375_odr {
-	ADXL375_ODR_400HZ,
-	ADXL375_ODR_800HZ,
-	ADXL375_ODR_1600HZ,
-	ADXL375_ODR_3200HZ,
-	ADXL375_ODR_6400HZ
-};
-
-enum adxl375_instant_on_th_mode {
-	ADXL375_INSTANT_ON_LOW_TH,
-	ADXL375_INSTANT_ON_HIGH_TH
-};
-
-enum adxl375_wakeup_rate {
-	ADXL375_WUR_52ms,
-	ADXL375_WUR_104ms,
-	ADXL375_WUR_208ms,
-	ADXL375_WUR_512ms,
-	ADXL375_WUR_2048ms,
-	ADXL375_WUR_4096ms,
-	ADXL375_WUR_8192ms,
-	ADXL375_WUR_24576ms
-};
-
-enum adxl375_filter_settle {
-	ADXL375_FILTER_SETTLE_370,
-	ADXL375_FILTER_SETTLE_16
+    ADXL375_ODR_0_10HZ,
+    ADXL375_ODR_0_20HZ,
+    ADXL375_ODR_0_39HZ,
+    ADXL375_ODR_0_78HZ,
+    ADXL375_ODR_1_56HZ,
+    ADXL375_ODR_3_13HZ,
+    ADXL375_ODR_6_25HZ,
+    ADXL375_ODR_12_5HZ,
+    ADXL375_ODR_25HZ,
+    ADXL375_ODR_50HZ,
+    ADXL375_ODR_100HZ,
+    ADXL375_ODR_200HZ,
+    ADXL375_ODR_400HZ,
+    ADXL375_ODR_800HZ,
+    ADXL375_ODR_1600HZ,
+    ADXL375_ODR_3200HZ
 };
 
 enum adxl375_fifo_format {
@@ -276,10 +262,9 @@ enum adxl375_fifo_format {
 };
 
 enum adxl375_fifo_mode {
-	ADXL375_FIFO_BYPASSED,
-	ADXL375_FIFO_STREAMED,
-	ADXL375_FIFO_TRIGGERED,
-	ADXL375_FIFO_OLD_SAVED
+	ADXL375_FIFO_BYPASS,
+	ADXL375_FIFO_STREAM,
+	ADXL375_FIFO_TRIGGER
 };
 
 struct adxl375_fifo_config {
@@ -315,7 +300,6 @@ struct adxl375_data {
 	struct adxl375_xyz_accel_data sample;
 	const struct adxl375_transfer_function *hw_tf;
 	struct adxl375_fifo_config fifo_config;
-	enum adxl375_act_proc_mode act_proc_mode;
 #ifdef CONFIG_ADXL375_TRIGGER
 	struct gpio_callback gpio_cb;
 
@@ -348,7 +332,6 @@ struct adxl375_dev_config {
 #endif
 
 	enum adxl375_bandwidth bw;
-	enum adxl375_hpf_corner hpf;
 	enum adxl375_odr odr;
 
 	bool max_peak_detect_mode;
@@ -361,9 +344,6 @@ struct adxl375_dev_config {
 	struct adxl375_activity_threshold inactivity_th;
 	struct adxl375_fifo_config fifo_config;
 
-	enum adxl375_wakeup_rate wur;
-	enum adxl375_instant_on_th_mode	th_mode;
-	enum adxl375_filter_settle filter_settle;
 	enum adxl375_op_mode op_mode;
 
 	uint16_t inactivity_time;
