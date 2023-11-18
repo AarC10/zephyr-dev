@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Analog Devices Inc.
+ * Copyright (c) 2023 Aaron Chan
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -26,83 +26,102 @@
  * ADXL375 registers definition
  */
 #define ADXL375_DEVID		0x00u  /* Analog Devices accelerometer ID */
-#define ADXL375_DEVID_MST	0x01u  /* Analog Devices MEMS device ID */
-#define ADXL375_PARTID		0x02u  /* Device ID */
-#define ADXL375_REVID		0x03u  /* product revision ID*/
-#define ADXL375_STATUS_1	0x04u  /* Status register 1 */
-#define ADXL375_STATUS_2	0x05u  /* Status register 2 */
-#define ADXL375_FIFO_ENTRIES_2	0x06u  /* Valid data samples in the FIFO */
-#define ADXL375_FIFO_ENTRIES_1	0x07u  /* Valid data samples in the FIFO */
-#define ADXL375_X_DATA_H	0x08u  /* X-axis acceleration data [11:4] */
-#define ADXL375_X_DATA_L	0x09u  /* X-axis acceleration data [3:0] */
-#define ADXL375_Y_DATA_H	0x0Au  /* Y-axis acceleration data [11:4] */
-#define ADXL375_Y_DATA_L	0x0Bu  /* Y-axis acceleration data [3:0] */
-#define ADXL375_Z_DATA_H	0x0Cu  /* Z-axis acceleration data [11:4] */
-#define ADXL375_Z_DATA_L	0x0Du  /* Z-axis acceleration data [3:0] */
-#define ADXL375_X_MAXPEAK_H	0x15u  /* X-axis MaxPeak acceleration data */
-#define ADXL375_X_MAXPEAK_L	0x16u  /* X-axis MaxPeak acceleration data */
-#define ADXL375_Y_MAXPEAK_H	0x17u  /* Y-axis MaxPeak acceleration data */
-#define ADXL375_Y_MAXPEAK_L	0x18u  /* Y-axis MaxPeak acceleration data */
-#define ADXL375_Z_MAXPEAK_H	0x19u  /* Z-axis MaxPeak acceleration data */
-#define ADXL375_Z_MAXPEAK_L	0x1Au  /* Z-axis MaxPeak acceleration data */
-#define ADXL375_OFFSET_X	0x20u  /* X axis offset */
-#define ADXL375_OFFSET_Y	0x21u  /* Y axis offset */
-#define ADXL375_OFFSET_Z	0x22u  /* Z axis offset */
-#define ADXL375_X_THRESH_ACT_H	0x23u  /* X axis Activity Threshold [15:8] */
-#define ADXL375_X_THRESH_ACT_L	0x24u  /* X axis Activity Threshold [7:0] */
-#define ADXL375_Y_THRESH_ACT_H	0x25u  /* Y axis Activity Threshold [15:8] */
-#define ADXL375_Y_THRESH_ACT_L	0x26u  /* Y axis Activity Threshold [7:0] */
-#define ADXL375_Z_THRESH_ACT_H	0x27u  /* Z axis Activity Threshold [15:8] */
-#define ADXL375_Z_THRESH_ACT_L	0x28u  /* Z axis Activity Threshold [7:0] */
-#define ADXL375_TIME_ACT	0x29u  /* Activity Time */
-#define ADXL375_X_THRESH_INACT_H	0x2Au  /* X axis Inactivity Threshold */
-#define ADXL375_X_THRESH_INACT_L	0x2Bu  /* X axis Inactivity Threshold */
-#define ADXL375_Y_THRESH_INACT_H	0x2Cu  /* Y axis Inactivity Threshold */
-#define ADXL375_Y_THRESH_INACT_L	0x2Du  /* Y axis Inactivity Threshold */
-#define ADXL375_Z_THRESH_INACT_H	0x2Eu  /* Z axis Inactivity Threshold */
-#define ADXL375_Z_THRESH_INACT_L	0x2Fu  /* Z axis Inactivity Threshold */
-#define ADXL375_TIME_INACT_H	0x30u  /* Inactivity Time [15:8] */
-#define ADXL375_TIME_INACT_L	0x31u  /* Inactivity Time [7:0] */
-#define ADXL375_X_THRESH_ACT2_H	0x32u  /* X axis Activity2 Threshold [15:8] */
-#define ADXL375_X_THRESH_ACT2_L	0x33u  /* X axis Activity2 Threshold [7:0] */
-#define ADXL375_Y_THRESH_ACT2_H	0x34u  /* Y axis Activity2 Threshold [15:8] */
-#define ADXL375_Y_THRESH_ACT2_L	0x35u  /* Y axis Activity2 Threshold [7:0] */
-#define ADXL375_Z_THRESH_ACT2_H	0x36u  /* Z axis Activity2 Threshold [15:8] */
-#define ADXL375_Z_THRESH_ACT2_L	0x37u  /* Z axis Activity2 Threshold [7:0] */
-#define ADXL375_HPF		0x38u  /* High Pass Filter */
-#define ADXL375_FIFO_SAMPLES	0x39u  /* FIFO Samples */
-#define ADXL375_FIFO_CTL	0x3Au  /* FIFO Control */
-#define ADXL375_INT1_MAP	0x3Bu  /* Interrupt 1 mapping control */
-#define ADXL375_INT2_MAP        0x3Cu  /* Interrupt 2 mapping control */
-#define ADXL375_TIMING		0x3Du  /* Timing */
-#define ADXL375_MEASURE		0x3Eu  /* Measure */
-#define ADXL375_POWER_CTL	0x3Fu  /* Power control */
-#define ADXL375_SELF_TEST	0x40u  /* Self Test */
-#define ADXL375_RESET		0x41u  /* Reset */
-#define ADXL375_FIFO_DATA	0x42u  /* FIFO Data */
+#define ADXL375_THRESH_SHOCK	0x1Du  /* Shock Threshold */
+#define ADXL375_OFFSET_X	0x1E   /* X-axis Offset */
+#define ADXL375_OFFSET_Y	0x1F   /* Y-axis Offset */
+#define ADXL375_OFFSET_Z	0x20   /* Z-axis Offset */
+#define ADXL375_DUR_SHOCK	0x21   /* Shock Duration */
+#define ADXL375_LATENT_SHOCK	0x22   /* Shock Latency */
+#define ADXL375_WINDOW_SHOCK	0x23   /* Shock Window */
+#define ADXL375_THRESH_ACT      0x24   /* Activity Threshold */
+#define ADXL375_THRESH_INACT    0x25   /* Inctivity Threshold */
+#define ADXL375_TIME_INACT      0x26   /* Inactivity Time */
+#define ADXL375_ACT_INACT_CTL    0x27  /* Axis enable control for activity and inactivity detection */
+#define ADXL375_SHOCK_AXES       0x2A  /* Axis control for single shock/double shock */
+#define ADXL375_ACT_SHOCK_STATUS 0x2B  /* Source of single shock/double shock */
+#define ADXL375_BW_RATE          0x2C  /* Data rate and power mode control */
+#define ADXL375_POWER_CTL        0x2D  /* Power saving features control */
+#define ADXL375_INT_ENABLE       0x2E  /* Interrupt enable control */
+#define ADXL375_INT_MAP          0x2F  /* Interrupt mapping control */
+#define ADXL375_INT_SOURCE       0x30  /* Interrupt source */
+#define ADXL375_DATA_FORMAT      0x31  /* Data format control */
+#define ADXL375_DATAX0           0x32  /* X-Axis Data 0 */
+#define ADXL375_DATAX1           0x33  /* X-Axis Data 1 */
+#define ADXL375_DATAY0           0x34  /* Y-Axis Data 0 */
+#define ADXL375_DATAY1           0x35  /* Y-Axis Data 1 */
+#define ADXL375_DATAZ0           0x36  /* Z-Axis Data 0 */
+#define ADXL375_DATAZ1           0x37  /* Z-Axis Data 1 */
+#define ADXL375_FIFO_CTL         0x38  /* FIFO control */
+#define ADXL375_FIFO_STATUS      0x39  /* FIFO status */
 
-#define ADXL375_DEVID_VAL	0xADu  /* Analog Devices accelerometer ID */
-#define ADXL375_MST_DEVID_VAL	0x1Du  /* Analog Devices MEMS device ID */
-#define ADXL375_PARTID_VAL	0xFAu  /* Device ID */
-#define ADXL375_REVID_VAL	0x02u  /* product revision ID*/
-#define ADXL375_RESET_CODE	0x52u  /* Writing code 0x52 resets the device */
+
+#define ADXL375_DEVID_VAL	0xE5u  /* Analog Devices accelerometer ID */
 
 #define ADXL375_READ		0x01u
 #define ADXL375_REG_READ(x)	(((x & 0xFF) << 1) | adxl375_READ)
 #define ADXL375_REG_WRITE(x)	((x & 0xFF) << 1)
 #define ADXL375_TO_I2C_REG(x)	((x) >> 1)
 
+/* ADXL375_ACT_INACT_CTL */
+#define ADXL375_POWER_CTL_ACT_ACDC_MSK		BIT(7)
+#define ADXL375_POWER_CTL_ACT_X_EN_MSK		BIT(6)
+#define ADXL375_POWER_CTL_ACT_Y_EN_MSK		BIT(5)
+#define ADXL375_POWER_CTL_ACT_Z_EN_MSK		BIT(4)
+#define ADXL375_POWER_CTL_INACT_ACDC_MSK	BIT(3)
+#define ADXL375_POWER_CTL_INACT_X_EN_MSK	BIT(2)
+#define ADXL375_POWER_CTL_INACT_Y_EN_MSK	BIT(1)
+#define ADXL375_POWER_CTL_INACT_Z_EN_MSK	BIT(0)
+
+#define ADXL375_POWER_CTL_ACT_ACDC_MODE(x)      (((x) & 0x1) << 7)
+#define ADXL375_POWER_CTL_ACT_X_EN_MODE(x)      (((x) & 0x1) << 6)
+#define ADXL375_POWER_CTL_ACT_Y_EN_MODE(x)      (((x) & 0x1) << 5)
+#define ADXL375_POWER_CTL_ACT_Z_EN_MODE(x)      (((x) & 0x1) << 4)
+#define ADXL375_POWER_CTL_INACT_ACDC_MODE(x)    (((x) & 0x1) << 3)
+#define ADXL375_POWER_CTL_INACT_X_EN_MODE(x)    (((x) & 0x1) << 2)
+#define ADXL375_POWER_CTL_INACT_Y_EN_MODE(x)    (((x) & 0x1) << 1)
+#define ADXL375_POWER_CTL_INACT_Z_EN_MODE(x)    (((x) & 0x1) << 0)
+
+
+/* ADXL375_SHOCK_AXES */
+#define ADXL375_SHOCK_CTL_SUPPRESS_MSK      BIT(3)
+#define ADXL375_SHOCK_CTL_SHOCK_X_EN_MSK    BIT(2)
+#define ADXL375_SHOCK_CTL_SHOCK_Y_EN_MSK    BIT(1)
+#define ADXL375_SHOCK_CTL_SHOCK_Z_EN_MSK    BIT(0)
+
+#define ADXL375_SHOCK_CTL_SUPPRESS_MODE(x)    (((x) & 0x1) << 3)
+#define ADXL375_SHOCK_CTL_SHOCK_X_EN_MODE(x)  (((x) & 0x1) << 2)
+#define ADXL375_SHOCK_CTL_SHOCK_Y_EN_MODE(x)  (((x) & 0x1) << 1)
+#define ADXL375_SHOCK_CTL_SHOCK_Z_EN_MODE(x)  (((x) & 0x1) << 0)
+
+
+/* ADXL375_ACT_SHOCK_STATUS */
+#define ADXL375_ACT_SHOCK_STATUS_ACT_X_SRC(x)      (((x) >> 6) & 0x1)
+#define ADXL375_ACT_SHOCK_STATUS_ACT_Y_SRC(x)      (((x) >> 5) & 0x1)
+#define ADXL375_ACT_SHOCK_STATUS_ACT_Z_SRC(x)      (((x) >> 4) & 0x1)
+#define ADXL375_ACT_SHOCK_STATUS_ASLEEP(x)         (((x) >> 3) & 0x1)
+#define ADXL375_ACT_SHOCK_STATUS_SHOCK_X_SRC(x)    (((x) >> 2) & 0x1)
+#define ADXL375_ACT_SHOCK_STATUS_SHOCK_Y_SRC(x)    (((x) >> 1) & 0x1)
+#define ADXL375_ACT_SHOCK_STATUS_SHOCK_Z_SRC(x)    (((x) >> 0) & 0x1)
+
+/* ADXL375_BW_RATE */
+#define ADXL375_BW_RATE_LOW_POWER_MSK		BIT(4)
+#define ADXL375_BW_RATE_RATE_MSK		GENMASK(3, 0)
+
+#define	ADXL375_BW_RATE_LOW_POWER_MODE		(((x) & 0x1) << 4)
+#define	ADXL375_BW_RATE_RATE_MODE		(((x) & 0x15) << 4)
+
 /* ADXL375_POWER_CTL */
-#define ADXL375_POWER_CTL_INSTANT_ON_TH_MSK	BIT(5)
-#define ADXL375_POWER_CTL_INSTANT_ON_TH_MODE(x)	(((x) & 0x1) << 5)
-#define ADXL375_POWER_CTL_FIL_SETTLE_MSK	BIT(4)
-#define ADXL375_POWER_CTL_FIL_SETTLE_MODE(x)	(((x) & 0x1) << 4)
-#define ADXL375_POWER_CTL_LPF_DIS_MSK		BIT(3)
-#define ADXL375_POWER_CTL_LPF_DIS_MODE(x)	(((x) & 0x1) << 3)
-#define ADXL375_POWER_CTL_HPF_DIS_MSK		BIT(2)
-#define ADXL375_POWER_CTL_HPF_DIS_MODE(x)	(((x) & 0x1) << 2)
-#define ADXL375_POWER_CTL_MODE_MSK		GENMASK(1, 0)
-#define ADXL375_POWER_CTL_MODE(x)		(((x) & 0x3) << 0)
+#define ADXL375_POWER_CTL_LINK_MSK		BIT(5)
+#define ADXL375_POWER_CTL_AUTO_SLEEP_MSK	BIT(4)
+#define ADXL375_POWER_CTL_MEASURE_MSK		BIT(3)
+#define ADXL375_POWER_CTL_SLEEP_MSK		BIT(2)
+#define ADXL375_POWER_CTL_WAKEUP_MSK		GENMASK(1, 0)
+
+#define ADXL375_POWER_CTL_LINK_MODE(x)		(((x) & 0x1) << 5)
+#define ADXL375_POWER_CTL_AUTO_SLEEP_MODE(x)	(((x) & 0x1) << 4)
+#define ADXL375_POWER_CTL_MEASURE_MODE(x)	(((x) & 0x1) << 3)
+#define ADXL375_POWER_CTL_SLEEP_MODE(x)		(((x) & 0x1) << 2)
+#define ADXL375_POWER_CTL_WAKEUP_MODE(x)	(((x) & 0x3) << 0)
 
 /* ADXL375_MEASURE */
 #define ADXL375_MEASURE_AUTOSLEEP_MSK		BIT(6)
