@@ -45,12 +45,12 @@
 #define ADXL375_INT_MAP          0x2F  /* Interrupt mapping control */
 #define ADXL375_INT_SOURCE       0x30  /* Interrupt source */
 #define ADXL375_DATA_FORMAT      0x31  /* Data format control */
-#define ADXL375_DATAX0           0x32  /* X-Axis Data 0 */
-#define ADXL375_DATAX1           0x33  /* X-Axis Data 1 */
-#define ADXL375_DATAY0           0x34  /* Y-Axis Data 0 */
-#define ADXL375_DATAY1           0x35  /* Y-Axis Data 1 */
-#define ADXL375_DATAZ0           0x36  /* Z-Axis Data 0 */
-#define ADXL375_DATAZ1           0x37  /* Z-Axis Data 1 */
+#define ADXL375_DATAX0           0x32  /* X-Axis Data 0 (LSB) */
+#define ADXL375_DATAX1           0x33  /* X-Axis Data 1 (MSB) */
+#define ADXL375_DATAY0           0x34  /* Y-Axis Data 0 (LSB) */
+#define ADXL375_DATAY1           0x35  /* Y-Axis Data 1 (MSB) */
+#define ADXL375_DATAZ0           0x36  /* Z-Axis Data 0 (LSB) */
+#define ADXL375_DATAZ1           0x37  /* Z-Axis Data 1 (MSB) */
 #define ADXL375_FIFO_CTL         0x38  /* FIFO control */
 #define ADXL375_FIFO_STATUS      0x39  /* FIFO status */
 
@@ -193,11 +193,14 @@
 #define ADXL375_FIFO_CTL_TRIGGER_MSK		BIT(5)
 #define ADXL375_FIFO_CTL_SAMPLES_MSK		GENMASK(4, 0)
 
+#define ADXL375_FIFO_CTL_FIFO_MODE_MODE(x)      (((x) & 0x7) << 5)
+#define ADXL375_FIFO_CTL_TRIGGER_MODE(x)        (((x) & 0x1) << 5)
+#define ADXL375_FIFO_CTL_SAMPLES_MODE(x)        ((x) & 0x1F)
 
 /* ADXL375_FIFO_STATUS */
+#define ADXL375_FIFO_STATUS_FIFO_TRIG(x)     (((x) >> 7) & 0x1)
+#define ADXL375_FIFO_STATUS_ENTRIES(x)       ((x) & 0x7F)
 
-
-/* ADXL375_HPF */
 
 enum adxl375_axis {
 	ADXL375_X_AXIS,
