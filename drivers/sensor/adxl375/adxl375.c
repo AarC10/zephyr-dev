@@ -113,26 +113,6 @@ static int adxl375_set_power_ctl_wakeup_bits(const struct device *dev, uint8_t w
 }
 
 /**
- * Autosleep. When set to 1, autosleep is enabled, and the device enters
- * wake-up mode automatically upon detection of inactivity.
- * @param dev - The device structure.
- * @param enable - Accepted values: true
- *				    false
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_set_autosleep(const struct device *dev, bool enable)
-{
-	struct adxl375_data *data = dev->data;
-
-	// Guarantee device is in standby before setting autosleep bit
-	adxl375_set_op_mode(dev, ADXL375_STANDBY);
-
-	return data->hw_tf->write_reg_mask(dev, ADXL375_MEASURE,
-					   ADXL375_MEASURE_AUTOSLEEP_MSK,
-					   ADXL375_MEASURE_AUTOSLEEP_MODE(enable));
-}
-
-/**
  * Select the desired output signal bandwidth.
  * @param dev - The device structure.
  * @param bw - bandwidth.
@@ -290,70 +270,6 @@ int adxl375_get_status(const struct device *dev,
 
 
 /**
- * Configure the operating parameters for the FIFO.
- * @param dev - The device structure.
- * @param mode - FIFO Mode. Specifies FIFO operating mode.
- *		Accepted values: ADXL375_FIFO_BYPASSED
- *				 ADXL375_FIFO_STREAMED
- *				 ADXL375_FIFO_TRIGGERED
- *				 ADXL375_FIFO_OLD_SAVED
- * @param format - FIFO Format. Specifies the data is stored in the FIFO buffer.
- *		Accepted values: ADXL375_XYZ_FIFO
- *				 ADXL375_X_FIFO
- *				 ADXL375_Y_FIFO
- *				 ADXL375_XY_FIFO
- *				 ADXL375_Z_FIFO
- *				 ADXL375_XZ_FIFO
- *				 ADXL375_YZ_FIFO
- *				 ADXL375_XYZ_PEAK_FIFO
- * @param fifo_samples - FIFO Samples. Watermark number of FIFO samples that
- *			triggers a FIFO_FULL condition when reached.
- *			Values range from 0 to 512.
-
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_configure_fifo(const struct device *dev,
-				  enum adxl375_fifo_mode mode,
-				  enum adxl375_fifo_format format,
-				  uint16_t fifo_samples)
-{
-	struct adxl375_data *data = dev->data;
-	uint8_t fifo_config;
-	int ret;
-
-	if (fifo_samples > 512) {
-		return -EINVAL;
-	}
-
-	/*
-	 * All FIFO modes must be configured while in standby mode.
-	 */
-	ret = adxl375_set_op_mode(dev, ADXL375_STANDBY);
-	if (ret) {
-		return ret;
-	}
-
-	fifo_config = (ADXL375_FIFO_CTL_FORMAT_MODE(format) |
-		       ADXL375_FIFO_CTL_MODE_MODE(mode) |
-		       ADXL375_FIFO_CTL_SAMPLES_MODE(fifo_samples));
-
-	ret = data->hw_tf->write_reg(dev, ADXL375_FIFO_CTL, fifo_config);
-	if (ret) {
-		return ret;
-	}
-	ret = data->hw_tf->write_reg(dev, ADXL375_FIFO_SAMPLES, fifo_samples & 0xFF);
-	if (ret) {
-		return ret;
-	}
-
-	data->fifo_config.fifo_format = format;
-	data->fifo_config.fifo_mode = mode;
-	data->fifo_config.fifo_samples = fifo_samples;
-
-	return 0;
-}
-
-/**
  * Retrieve 3-axis acceleration data
  * @param dev - The device structure.
  * @param maxpeak - Retrieve the highest magnitude (x, y, z) sample recorded
@@ -414,51 +330,6 @@ static int adxl375_attr_set_odr(const struct device *dev,
 	}
 
 	return adxl375_set_odr(dev, odr);
-}
-
-static int adxl375_attr_set_thresh(const struct device *dev,
-				   enum sensor_channel chan,
-				   enum sensor_attribute attr,
-				   const struct sensor_value *val)
-{
-	const struct adxl375_dev_config *cfg = dev->config;
-	struct adxl375_activity_threshold threshold;
-	int64_t llvalue;
-	int32_t value;
-	int64_t micro_ms2 = val->val1 * 1000000LL + val->val2;
-	uint8_t reg;
-
-	llvalue = llabs((micro_ms2 * 10) / SENSOR_G);
-
-	if (llvalue > 2047) {
-		return -EINVAL;
-	}
-
-	value = (int32_t) llvalue;
-
-	threshold.thresh = value;
-	threshold.enable = cfg->activity_th.enable;
-	threshold.referenced = cfg->activity_th.referenced;
-
-	if (attr ==  SENSOR_ATTR_UPPER_THRESH) {
-		reg = ADXL375_X_THRESH_ACT_H;
-	} else {
-		reg = ADXL375_X_THRESH_INACT_H;
-	}
-
-	switch (chan) {
-	case SENSOR_CHAN_ACCEL_X:
-		return adxl375_set_activity_threshold(dev, reg, &threshold);
-	case SENSOR_CHAN_ACCEL_Y:
-		return adxl375_set_activity_threshold(dev, reg + 2, &threshold);
-	case SENSOR_CHAN_ACCEL_Z:
-		return adxl375_set_activity_threshold(dev, reg + 4, &threshold);
-	case SENSOR_CHAN_ACCEL_XYZ:
-		return adxl375_set_activity_threshold_xyz(dev, reg, &threshold);
-	default:
-		LOG_ERR("attr_set() not supported on this channel");
-		return -ENOTSUP;
-	}
 }
 
 static int adxl375_attr_set(const struct device *dev,
@@ -550,14 +421,9 @@ static int adxl375_probe(const struct device *dev)
 		return ret;
 	}
 
-	ret = data->hw_tf->read_reg(dev, ADXL375_PARTID, &part_id);
 
-	if (ret) {
-		return ret;
-	}
-
-	if (dev_id != ADXL375_DEVID_VAL || part_id != adxl375_PARTID_VAL) {
-		LOG_ERR("failed to read id (0x%X:0x%X)", dev_id, part_id);
+	if (dev_id != ADXL375_DEVID_VAL) {
+		LOG_ERR("failed to read id (0x%X)", dev_id);
 		return -ENODEV;
 	}
 
@@ -569,16 +435,6 @@ static int adxl375_probe(const struct device *dev)
 
 	/* Device settings */
 	ret = adxl375_set_op_mode(dev, ADXL375_STANDBY);
-	if (ret) {
-		return ret;
-	}
-
-	ret = adxl375_reset(dev);
-	if (ret) {
-		return ret;
-	}
-
-	ret = adxl375_set_hpf_corner(dev, cfg->hpf);
 	if (ret) {
 		return ret;
 	}
@@ -608,40 +464,6 @@ static int adxl375_probe(const struct device *dev)
 		return ret;
 	}
 
-	ret = adxl375_set_activity_threshold_xyz(dev, ADXL375_X_THRESH_ACT_H,
-						 &cfg->activity_th);
-	if (ret) {
-		return ret;
-	}
-
-	ret = adxl375_set_activity_threshold_xyz(dev, ADXL375_X_THRESH_INACT_H,
-						 &cfg->inactivity_th);
-	if (ret) {
-		return ret;
-	}
-
-	ret = adxl375_set_activity_time(dev, cfg->activity_time);
-	if (ret) {
-		return ret;
-	}
-
-	ret = adxl375_set_inactivity_time(dev, cfg->inactivity_time);
-	if (ret) {
-		return ret;
-	}
-
-	ret = adxl375_set_filter_settle(dev, cfg->filter_settle);
-	if (ret) {
-		return ret;
-	}
-
-	ret = adxl375_configure_fifo(dev, cfg->fifo_config.fifo_mode,
-				     cfg->fifo_config.fifo_format,
-				     cfg->fifo_config.fifo_samples);
-	if (ret) {
-		return ret;
-	}
-
 #ifdef CONFIG_ADXL375_TRIGGER
 	if (adxl375_init_interrupt(dev) < 0) {
 		LOG_ERR("Failed to initialize interrupt!");
@@ -649,17 +471,17 @@ static int adxl375_probe(const struct device *dev)
 	}
 #endif
 
-	ret = adxl375_interrupt_config(dev, cfg->int1_config, cfg->int2_config);
-	if (ret) {
-		return ret;
-	}
+	// ret = adxl375_interrupt_config(dev, cfg->int1_config, cfg->int2_config);
+	// if (ret) {
+	// 	return ret;
+	// }
 
-	ret = adxl375_set_op_mode(dev, cfg->op_mode);
-	if (ret) {
-		return ret;
-	}
-
-	return adxl375_set_act_proc_mode(dev, data->act_proc_mode);
+	return adxl375_set_op_mode(dev, cfg->op_mode);
+	// if (ret) {
+	// 	return ret;
+	// }
+	//
+	// return adxl375_set_act_proc_mode(dev, data->act_proc_mode);
 }
 
 static int adxl375_init(const struct device *dev)
