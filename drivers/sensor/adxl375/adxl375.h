@@ -209,10 +209,9 @@ enum adxl375_axis {
 };
 
 enum adxl375_op_mode {
-	ADXL375_STANDBY,
-	ADXL375_WAKE_UP,
-	ADXL375_INSTANT_ON,
-	ADXL375_FULL_BW_MEASUREMENT
+	ADXL375_STANDBY = 0x04,
+	ADXL375_MEASUREMENT = 0x08,
+	ADXL375_AUTOSLEEP = 0x24
 };
 
 enum adxl375_bandwidth {
@@ -337,7 +336,6 @@ struct adxl375_dev_config {
 	enum adxl375_bandwidth bw;
 	enum adxl375_odr odr;
 
-	bool max_peak_detect_mode;
 
 	/* Device Settings */
 	bool autosleep;

@@ -23,34 +23,16 @@ LOG_MODULE_REGISTER(ADXL375, CONFIG_SENSOR_LOG_LEVEL);
 /**
  * Set the threshold for activity detection for a single axis
  * @param dev - The device structure.
- * @param axis_reg_h - The high part of the activity register.
+ * @param threshold_val - Threshold value scaled at 780 mg/LSB for detecting activity
  * @param act - The activity config structure.
  * @return 0 in case of success, negative error code otherwise.
  */
 static int adxl375_set_activity_threshold(const struct device *dev,
-					  uint8_t axis_reg_h,
+					  uint8_t threshold_val,
 					  const struct adxl375_activity_threshold *act)
 {
-	int ret;
-	uint8_t val;
 	struct adxl375_data *data = dev->data;
-
-	ret = data->hw_tf->write_reg(dev, axis_reg_h++, act->thresh >> 3);
-	if (ret) {
-		return ret;
-	}
-
-	switch (axis_reg_h) {
-	case ADXL375_X_THRESH_ACT_L:
-	case ADXL375_X_THRESH_INACT_L:
-	case ADXL375_X_THRESH_ACT2_L:
-		val = (act->thresh << 5) | (act->referenced << 1) | act->enable;
-		break;
-	default:
-		val = (act->thresh << 5) | act->enable;
-	}
-
-	return data->hw_tf->write_reg(dev, axis_reg_h, val);
+	return data->hw_tf->write_reg(dev, ADXL375_THRESH_ACT, threshold_val);
 }
 
 /**
@@ -60,7 +42,7 @@ static int adxl375_set_activity_threshold(const struct device *dev,
  * @param act - The activity config structure.
  * @return 0 in case of success, negative error code otherwise.
  */
-static int adxl375_set_activity_threshold_xyz(const struct device *dev,
+/*static int adxl375_set_activity_threshold_xyz(const struct device *dev,
 					      uint8_t axis_reg_h,
 					      const struct adxl375_activity_threshold *act)
 {
@@ -76,25 +58,58 @@ static int adxl375_set_activity_threshold_xyz(const struct device *dev,
 
 	return 0;
 }
+*/
 
-/**
- * Set the mode of operation.
- * @param dev - The device structure.
- * @param op_mode - Mode of operation.
- *		Accepted values: ADXL375_STANDBY
- *				 ADXL375_WAKE_UP
- *				 ADXL375_INSTANT_ON
- *				 ADXL375_FULL_BW_MEASUREMENT
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_set_op_mode(const struct device *dev,
-			       enum adxl375_op_mode op_mode)
+
+static int adxl375_get_power_ctl(const struct device *dev, uint8_t *power_ctl_val)
 {
+	struct adxl375_data *data = dev->data;
+	return data->hw_tf->read_reg(dev, ADXL375_POWER_CTL, power_ctl_val);
+}
+
+static int adxl375_set_power_ctl_link_bit(const struct device *dev, uint8_t link_bit) {
 	struct adxl375_data *data = dev->data;
 
 	return data->hw_tf->write_reg_mask(dev, ADXL375_POWER_CTL,
-					   ADXL375_POWER_CTL_MODE_MSK,
-					   ADXL375_POWER_CTL_MODE(op_mode));
+					   ADXL375_POWER_CTL_LINK_MSK,
+					   ADXL375_POWER_CTL_LINK_MODE(link_bit));
+}
+
+
+static int adxl375_set_power_ctl_autosleep_bit(const struct device *dev, uint8_t autosleep_bit) {
+	struct adxl375_data *data = dev->data;
+
+	return data->hw_tf->write_reg_mask(dev, ADXL375_POWER_CTL,
+					   ADXL375_POWER_CTL_AUTO_SLEEP_MSK,
+					   ADXL375_POWER_CTL_AUTO_SLEEP_MODE(autosleep_bit));
+}
+
+
+
+static int adxl375_set_power_ctl_measure_bit(const struct device *dev, uint8_t measure_bit) {
+	struct adxl375_data *data = dev->data;
+
+	return data->hw_tf->write_reg_mask(dev, ADXL375_POWER_CTL,
+					   ADXL375_POWER_CTL_MEASURE_MSK,
+					   ADXL375_POWER_CTL_MEASURE_MODE(measure_bit));
+}
+
+
+static int adxl375_set_power_ctl_sleep_bit(const struct device *dev, uint8_t link_bit) {
+	struct adxl375_data *data = dev->data;
+
+	return data->hw_tf->write_reg_mask(dev, ADXL375_POWER_CTL,
+					   ADXL375_POWER_CTL_LINK_MSK,
+					   ADXL375_POWER_CTL_LINK_MODE(link_bit));
+}
+
+
+static int adxl375_set_power_ctl_wakeup_bits(const struct device *dev, uint8_t wakeup_bit) {
+	struct adxl375_data *data = dev->data;
+
+	return data->hw_tf->write_reg_mask(dev, ADXL375_POWER_CTL,
+					   ADXL375_POWER_CTL_WAKEUP_MSK,
+					   ADXL375_POWER_CTL_WAKEUP_MODE(wakeup_bit));
 }
 
 /**
@@ -108,6 +123,9 @@ static int adxl375_set_op_mode(const struct device *dev,
 static int adxl375_set_autosleep(const struct device *dev, bool enable)
 {
 	struct adxl375_data *data = dev->data;
+
+	// Guarantee device is in standby before setting autosleep bit
+	adxl375_set_op_mode(dev, ADXL375_STANDBY);
 
 	return data->hw_tf->write_reg_mask(dev, ADXL375_MEASURE,
 					   ADXL375_MEASURE_AUTOSLEEP_MSK,
@@ -178,7 +196,7 @@ static int adxl375_set_odr(const struct device *dev, enum adxl375_odr odr)
  *				 ADXL375_INSTANT_ON_HIGH_TH
  * @return 0 in case of success, negative error code otherwise.
  */
-static int adxl375_set_instant_on_th(const struct device *dev,
+/* static int adxl375_set_instant_on_th(const struct device *dev,
 				     enum adxl375_instant_on_th_mode mode)
 {
 	struct adxl375_data *data = dev->data;
@@ -186,65 +204,7 @@ static int adxl375_set_instant_on_th(const struct device *dev,
 	return data->hw_tf->write_reg_mask(dev, ADXL375_POWER_CTL,
 					   ADXL375_POWER_CTL_INSTANT_ON_TH_MSK,
 					   ADXL375_POWER_CTL_INSTANT_ON_TH_MODE(mode));
-}
-
-/**
- * Set the Timer Rate for Wake-Up Mode.
- * @param dev - The device structure.
- * @param wur - wake up mode rate
- *		Accepted values: ADXL375_WUR_52ms
- *				 ADXL375_WUR_104ms
- *				 ADXL375_WUR_208ms
- *				 ADXL375_WUR_512ms
- *				 ADXL375_WUR_2048ms
- *				 ADXL375_WUR_4096ms
- *				 ADXL375_WUR_8192ms
- *				 ADXL375_WUR_24576ms
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_set_wakeup_rate(const struct device *dev,
-				   enum adxl375_wakeup_rate wur)
-{
-	struct adxl375_data *data = dev->data;
-
-	return data->hw_tf->write_reg_mask(dev, ADXL375_TIMING,
-					   ADXL375_TIMING_WAKE_UP_RATE_MSK,
-					   ADXL375_TIMING_WAKE_UP_RATE_MODE(wur));
-}
-
-/**
- * Set the activity timer
- * @param dev - The device structure.
- * @param time - The value set in this register.
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_set_activity_time(const struct device *dev, uint8_t time)
-{
-	struct adxl375_data *data = dev->data;
-
-	return data->hw_tf->write_reg(dev, ADXL375_TIME_ACT, time);
-}
-
-/**
- * Set the inactivity timer
- * @param dev - The device structure.
- * @param time - is the 16-bit value set by the TIME_INACT_L register
- *		 (eight LSBs) and the TIME_INACT_H register (eight MSBs).
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_set_inactivity_time(const struct device *dev,
-				       uint16_t time)
-{
-	int ret;
-	struct adxl375_data *data = dev->data;
-
-	ret = data->hw_tf->write_reg(dev, ADXL375_TIME_INACT_H, time >> 8);
-	if (ret) {
-		return ret;
-	}
-
-	return data->hw_tf->write_reg(dev, ADXL375_TIME_INACT_L, time & 0xFF);
-}
+} */
 
 /**
  * Set the filter settling period.
@@ -328,26 +288,6 @@ int adxl375_get_status(const struct device *dev,
 	return ret;
 }
 
-/**
- * Software reset.
- * @param dev - The device structure.
- * @return 0 in case of success, negative error code otherwise.
- */
-static int adxl375_reset(const struct device *dev)
-{
-	int ret;
-	struct adxl375_data *data = dev->data;
-
-	ret = adxl375_set_op_mode(dev, ADXL375_STANDBY);
-	if (ret) {
-		return ret;
-	}
-	/* Writing code 0x52 resets the device */
-	ret = data->hw_tf->write_reg(dev, ADXL375_RESET, adxl375_RESET_CODE);
-	k_sleep(K_MSEC(1));
-
-	return ret;
-}
 
 /**
  * Configure the operating parameters for the FIFO.
@@ -601,14 +541,17 @@ static int adxl375_probe(const struct device *dev)
 {
 	const struct adxl375_dev_config *cfg = dev->config;
 	struct adxl375_data *data = dev->data;
-	uint8_t dev_id, part_id;
+	uint8_t dev_id;
+	uint8_t part_id;
 	int ret;
 
 	ret = data->hw_tf->read_reg(dev, ADXL375_DEVID, &dev_id);
 	if (ret) {
 		return ret;
 	}
+
 	ret = data->hw_tf->read_reg(dev, ADXL375_PARTID, &part_id);
+
 	if (ret) {
 		return ret;
 	}
