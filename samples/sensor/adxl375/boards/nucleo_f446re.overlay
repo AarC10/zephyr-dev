@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2023 Aaron Chan
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&i2c1 {
+	ad_tmp116: adi_adx375@53 {
+		compatible = "adi,adxl375";
+		reg = <0x53>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+};
