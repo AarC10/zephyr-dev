@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <asm-generic/errno-base.h>
 #define DT_DRV_COMPAT adi_adxl375
 
 #include <zephyr/drivers/sensor.h>
@@ -39,7 +40,31 @@ static const struct sensor_driver_api adxl375_driver_api = {
 	.channel_get = adxl375_channel_get
 }
 
+
+static int adxl375_check_id() {
+	int ret = 0; // TODO: read reg
+
+	if (ret != 0) {
+		return -ENODEV;
+	}
+
+	return 0;
+}
+
+static int adxl375_set_odr() {
+
+}
+
+static int adxl375_set_op_mode() {
+
+}
+
 int adxl375_init(const struct device *dev) {
+	int ret = adxl375_check_id();
+	if (!ret) {
+		return ret;
+	}
+
 	return -1;
 }
 
