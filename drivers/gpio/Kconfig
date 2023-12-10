@@ -226,6 +226,8 @@ source "drivers/gpio/Kconfig.efinix_sapphire"
 source "drivers/gpio/Kconfig.davinci"
 source "drivers/gpio/Kconfig.sedi"
 
+source "drivers/gpio/Kconfig.tle9104"
+
 source "drivers/gpio/Kconfig.altera"
 
 source "drivers/gpio/Kconfig.bcm2711"
@@ -233,5 +235,7 @@ source "drivers/gpio/Kconfig.bcm2711"
 source "drivers/gpio/Kconfig.ra"
 
 source "drivers/gpio/Kconfig.rzt2m"
+
+source "drivers/gpio/Kconfig.ambiq"
 
 endif # GPIO

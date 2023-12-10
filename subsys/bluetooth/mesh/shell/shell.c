@@ -1070,7 +1070,7 @@ static int cmd_rpl_clear(const struct shell *sh, size_t argc, char *argv[])
 }
 
 #if defined(CONFIG_BT_MESH_SHELL_HEALTH_SRV_INSTANCE)
-static struct bt_mesh_elem *primary_element(void)
+static const struct bt_mesh_elem *primary_element(void)
 {
 	const struct bt_mesh_comp *comp = bt_mesh_comp_get();
 
@@ -1085,7 +1085,7 @@ static int cmd_add_fault(const struct shell *sh, size_t argc, char *argv[])
 {
 	uint8_t fault_id;
 	uint8_t i;
-	struct bt_mesh_elem *elem;
+	const struct bt_mesh_elem *elem;
 	int err = 0;
 
 	elem = primary_element();
@@ -1138,7 +1138,7 @@ static int cmd_del_fault(const struct shell *sh, size_t argc, char *argv[])
 {
 	uint8_t fault_id;
 	uint8_t i;
-	struct bt_mesh_elem *elem;
+	const struct bt_mesh_elem *elem;
 	int err = 0;
 
 	elem = primary_element();
@@ -1814,5 +1814,5 @@ SHELL_STATIC_SUBCMD_SET_CREATE(mesh_cmds,
 	SHELL_SUBCMD_SET_END
 );
 
-SHELL_CMD_ARG_REGISTER(mesh, &mesh_cmds, "Bluetooth mesh shell commands",
+SHELL_CMD_ARG_REGISTER(mesh, &mesh_cmds, "Bluetooth Mesh shell commands",
 			bt_mesh_shell_mdl_cmds_help, 1, 1);

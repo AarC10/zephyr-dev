@@ -16,7 +16,6 @@
 #include <zephyr/bluetooth/mesh.h>
 
 #include "mesh.h"
-#include "adv.h"
 #include "net.h"
 #include "transport.h"
 #include "access.h"
@@ -384,7 +383,7 @@ static int health_pub_update(const struct bt_mesh_model *mod)
 	return 0;
 }
 
-int bt_mesh_health_srv_fault_update(struct bt_mesh_elem *elem)
+int bt_mesh_health_srv_fault_update(const struct bt_mesh_elem *elem)
 {
 	const struct bt_mesh_model *mod;
 
