@@ -563,6 +563,7 @@ test_i2c_bmi160: bmi160@52 {
 test_i2c_adxl375: adxl375@53 {
 	compatible = "adi,adxl375";
 	reg = <0x53>;
+	int-gpios = <test_gpio 0 0>;
 };
 
 test_i2c_bmi270: bmi270@53 {

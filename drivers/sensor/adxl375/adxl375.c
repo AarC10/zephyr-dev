@@ -100,3 +100,13 @@ static const struct sensor_driver_api adxl375_driver_api =
 	.sample_fetch = adxl375_sample_fetch,
 	.channel_get = adxl375_channel_get
 };
+
+static struct adxl375_data adxl375_datal
+
+static const struct sensor_driver_api adxl375_api_funcs = {
+	.channel_get = adxl375_channel_get,
+	.sample_fetch = adxl375_sample_fetch
+}
+
+DEVICE_AND_API_INIT(adxl375, CONFIG_ADXL375_DEV_NAME, adxl375_init, &adxl375_data,
+		    &adxl375_data, &adxl375_config, POST_KERNEL, CONFIG_SENSOR_INIT_PRIORITY, &adxl375_api_funcs);

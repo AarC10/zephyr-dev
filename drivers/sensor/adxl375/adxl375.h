@@ -340,31 +340,10 @@ struct adxl375_dev_config {
 	/* Device Settings */
 	bool autosleep;
 
-	struct adxl375_activity_threshold activity_th;
-	struct adxl375_activity_threshold activity2_th;
-	struct adxl375_activity_threshold inactivity_th;
-	struct adxl375_fifo_config fifo_config;
-
 	enum adxl375_op_mode op_mode;
-
-	uint16_t inactivity_time;
-	uint8_t activity_time;
-	uint8_t int1_config;
-	uint8_t int2_config;
 };
 
 int adxl375_spi_init(const struct device *dev);
 int adxl375_i2c_init(const struct device *dev);
-
-#ifdef CONFIG_ADXL375_TRIGGER
-int adxl375_get_status(const struct device *dev,
-		       uint8_t *status1, uint8_t *status2, uint16_t *fifo_entries);
-
-int adxl375_trigger_set(const struct device *dev,
-			const struct sensor_trigger *trig,
-			sensor_trigger_handler_t handler);
-
-int adxl375_init_interrupt(const struct device *dev);
-#endif /* CONFIG_ADXL375_TRIGGER */
 
 #endif /* ZEPHYR_DRIVERS_SENSOR_ADXL375_adxl375_H_ */
