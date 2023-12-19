@@ -1,0 +1,90 @@
+# Copyright (c) 2023 Aaron Chan
+# SPDX-License-Identifier: Apache-2.0
+
+include: sensor-device.yaml
+
+properties:
+  odr:
+    type: int
+    default: 0
+    description: |
+          Accelerometer sampling frequency (ODR). Default is power on reset value.
+            0 # 0.10 Hz
+            1 # 0.20 Hz
+            2 # 0.39 Hz
+            3 # 0.78 Hz
+            4 # 1.56 Hz
+            5 # 3.13 Hz
+            6 # 6.25 Hz
+            7 # 12.5 Hz
+            8 # 25 Hz
+            9 # 50 Hz
+            10 # 100 Hz
+            11 # 200 Hz
+            12 # 400 Hz
+            13 # 800 Hz
+            14 # 1600 Hz
+            15 # 3200 Hz
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+
+  bw:
+    type: int
+    default: 12
+    description: |
+          Low-Pass (Antialiasing) Filter corner frequency. Default is power on reset value.
+            0 # 0.05 Hz
+            1 # 0.10 Hz
+            2 # 0.20 Hz
+            3 # 0.39 Hz
+            4 # 0.78 Hz
+            5 # 1.56 Hz
+            6 # 3.13 Hz
+            7 # 6.25 Hz
+            8 # 12.5 Hz
+            9 # 25 Hz
+            10 # 50 Hz
+            11 # 100 Hz
+            12 # 200 Hz
+            13 # 400 Hz
+            14 # 800 Hz
+            15 # 1600 Hz
+    enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+
+  int1-gpios:
+    type: phandle-array
+    description: |
+      The INT1 signal defaults to active high as produced by the
+      sensor.  The property value should ensure the flags properly
+      describe the signal that is presented to the driver.
