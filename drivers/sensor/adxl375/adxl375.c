@@ -38,15 +38,17 @@ static int adxl375_check_id(const struct device *dev) {
 	return 0;
 }
 
-static int adxl375_set_odr()
+static int adxl375_set_odr_and_lp(const struct device *dev, const uint32_t data_rate, const bool low_power)
 {
+	if (low_power) {
+		data_rate |= 0x8;
+	}
 
-
+	return dev->data->hw_tf->write_reg(dev, ADXL375_REG_BW_RATE, data_rate);
 }
 
-static int adxl375_set_op_mode()
+static int adxl375_set_op_mode(const struct device *dev, enum adxl375_op_mode op_mode)
 {
-
 }
 
 static int adxl375_wakeup()
