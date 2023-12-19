@@ -560,6 +560,11 @@ test_i2c_bmi160: bmi160@52 {
 	int-gpios = <&test_gpio 0 0>;
 };
 
+test_i2c_adxl375: adxl375@53 {
+	compatible = "adi,adxl375";
+	reg = <0x53>;
+};
+
 test_i2c_bmi270: bmi270@53 {
 	compatible = "bosch,bmi270";
 	reg = <0x53>;
@@ -837,11 +842,6 @@ test_i2c_adxl367: adxl367@77 {
 	reg = <0x77>;
 	odr = <4>;
 	int1-gpios = <&test_gpio 0 0>;
-};
-
-test_i2c_adxl375: adxl375@53 {
-	compatible = "adi,adxl375";
-	reg = <0x53>;
 };
 
 test_i2c_tsl2561: tsl2561@78 {
