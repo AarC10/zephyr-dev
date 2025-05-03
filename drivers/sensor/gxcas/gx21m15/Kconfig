@@ -1,0 +1,14 @@
+# GX21M15 temperature sensor configuration options
+
+# Copyright (c) 2025 Aaron Chan
+# SPDX-License-Identifier: Apache-2.0
+
+config GX21M15
+	bool "GX21M15 Temperature Sensor"
+	default y
+	depends on DT_HAS_GXCAS_GX21M15_ENABLED
+	select I2C
+	help
+	  Enable the driver for the GXCAS GX21M15 digital temperature sensor
+	  with I2C interface. This driver reads temperature data and provides
+	  it through the sensor API.

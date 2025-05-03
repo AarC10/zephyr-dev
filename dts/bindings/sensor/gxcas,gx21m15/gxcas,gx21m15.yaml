@@ -1,0 +1,20 @@
+# Copyright (c) 2025 GXCAS
+# SPDX-License-Identifier: Apache-2.0
+
+description: GXCAS GX21M15 temperature sensor
+
+compatible: "gxcas,gx21m15"
+
+include: [sensor-device.yaml, i2c-device.yaml]
+
+properties:
+  int-gpios:
+    type: phandle-array
+    description: |
+      Identifies the ALERT/INT pin. This pin is active-low by default.
+
+  int-inverted:
+    type: boolean
+    description: |
+      Sensor's interrupt polarity. If true, the ALERT/INT pin is active-high,
+      otherwise it is active-low.

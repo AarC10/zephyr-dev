@@ -1,0 +1,15 @@
+/*
+ * Copyright (c) 2025 Aaron Chan
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&i2c1 {
+	status = "okay";
+
+	gx21m15@49 {
+		compatible = "gxcas,gx21m15";
+		reg = <0x49>;
+		int-gpios = <&gpioa 10 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+	};
+};
