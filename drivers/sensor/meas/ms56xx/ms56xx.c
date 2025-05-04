@@ -4,7 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#define DT_DRV_COMPAT meas_ms56xx
+#define DT_DRV_COMPAT_MS56XX meas_ms56xx
+#define DT_DRV_COMPAT_MS5607 meas_ms5607
+#define DT_DRV_COMPAT_MS5611 meas_ms5611
+#define DT_DRV_COMPAT DT_DRV_COMPAT_MS56XX
 
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
@@ -372,4 +375,14 @@ static const struct sensor_driver_api ms56xx_api_funcs = {
 				     CONFIG_SENSOR_INIT_PRIORITY, &ms56xx_api_funcs);
 
 /* Create the struct device for every status "okay" node in the devicetree. */
+DT_INST_FOREACH_STATUS_OKAY(MS56XX_DEFINE)
+
+/* Also create for MS5607 specific compatible */
+#undef DT_DRV_COMPAT
+#define DT_DRV_COMPAT DT_DRV_COMPAT_MS5607
+DT_INST_FOREACH_STATUS_OKAY(MS56XX_DEFINE)
+
+/* Also create for MS5611 specific compatible */
+#undef DT_DRV_COMPAT
+#define DT_DRV_COMPAT DT_DRV_COMPAT_MS5611
 DT_INST_FOREACH_STATUS_OKAY(MS56XX_DEFINE)

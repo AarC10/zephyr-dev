@@ -1,0 +1,13 @@
+sample:
+  name: MS56XX Pressure Sensor Sample
+  description: |
+    Sample application for MS5607/MS5611 pressure and temperature sensors.
+tests:
+  sample.sensor.ms56xx:
+    harness: sensor
+    tags: sensors
+    depends_on: i2c
+    filter: dt_compat_enabled("meas,ms56xx") or dt_compat_enabled("meas,ms5607") or dt_compat_enabled("meas,ms5611")
+    integration_platforms:
+      - nucleo_f446re
+      - nrf52840dk/nrf52840

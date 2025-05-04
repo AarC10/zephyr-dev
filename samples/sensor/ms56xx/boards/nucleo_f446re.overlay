@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2024 Aaron Chan <aarchan108@gmail.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&i2c1 {
+	status = "okay";
+	
+	/* MS5607 example */
+	ms5607: ms5607@76 {
+		compatible = "meas,ms5607";
+		reg = <0x76>;
+	};
+
+	/* MS5611 example */
+	ms5611: ms5611@77 {
+		compatible = "meas,ms5611";
+		reg = <0x77>;
+	};
+};
+
+/* Example using the legacy compatible for MS5607 */
+&i2c2 {
+	status = "okay";
+
+	ms56xx: ms56xx@76 {
+		compatible = "meas,ms56xx";
+		reg = <0x76>;
+		chip = <7>; /* MS5607 */
+	};
+};
