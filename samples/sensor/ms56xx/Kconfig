@@ -1,0 +1,12 @@
+# Copyright (c) 2024 MS56XX Driver Sample Author
+# SPDX-License-Identifier: Apache-2.0
+
+source "Kconfig.zephyr"
+
+config APP_MS56XX_OVERSAMPLING_RATE
+	int "MS56XX oversampling rate"
+	default 4096
+	help
+	  MS56XX sensor oversampling rate. Higher rates provide more accurate
+	  readings but require more time to sample. Valid values are 256, 512,
+	  1024, 2048, and 4096.

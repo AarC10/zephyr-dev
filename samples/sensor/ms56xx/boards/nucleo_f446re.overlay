@@ -1,0 +1,30 @@
+/*
+ * Copyright (c) 2025 Aaron Chan
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&i2c1 {
+	status = "okay";
+
+	ms5611: ms5611@76 {
+		compatible = "meas,ms5611";
+		reg = <0x76>;
+	};
+
+	/* Uncomment to use MS5607 instead */
+	/*
+	ms5607: ms5607@76 {
+		compatible = "meas,ms5607";
+		reg = <0x76>;
+		status = "disabled";
+	};
+	*/
+};
+
+/* Using ms5611 as the default pressure sensor */
+/ {
+	aliases {
+		pressure-sensor = &ms5611;
+	};
+};

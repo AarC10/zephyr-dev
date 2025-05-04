@@ -1,0 +1,11 @@
+sample:
+  name: MS56xx Sensor Sample
+  description: Demonstration of the MS5607/MS5611 Pressure and Temperature sensor driver
+tests:
+  sample.sensor.ms56xx:
+    harness: sensor
+    tags: sensors
+    depends_on:
+      - i2c
+      - gpio
+    platform_allow: nucleo_f446re
