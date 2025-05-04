@@ -68,8 +68,9 @@
 #define MS56XX_TEMP_OVER_DEFAULT 2048
 #endif
 
-#define MS56XX_5607_CHIP 7
-#define MS56XX_5611_CHIP 11
+/* These chip defines are kept for legacy reference but are no longer used with compatible strings */
+/* #define MS56XX_5607_CHIP 7 */
+/* #define MS56XX_5611_CHIP 11 */
 
 #define MS5607_OFFSET_TEMP_C2_FACTOR_EXP  17
 #define MS5607_OFFSET_TEMP_C4_D2_DIV_EXP  6

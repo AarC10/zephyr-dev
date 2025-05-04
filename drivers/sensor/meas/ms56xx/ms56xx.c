@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#define DT_DRV_COMPAT meas_ms56xx
+#define DT_DRV_COMPAT meas_ms5607
+#define DT_DRV_COMPAT_MS5611 meas_ms5611
 
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
@@ -307,20 +308,16 @@ static const struct sensor_driver_api ms56xx_api_funcs = {
 	(SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | SPI_MODE_CPOL | SPI_MODE_CPHA | SPI_TRANSFER_MSB)
 
 /* Initializes a struct ms56xx_config for an instance on a SPI bus. */
-#define MS56XX_CONFIG_SPI(inst)                                                                    \
+#define MS56XX_CONFIG_MS5607_SPI(inst)                                                             \
 	{.tf = &ms56xx_spi_transfer_function,                                                      \
 	 .bus_cfg.spi = SPI_DT_SPEC_INST_GET(inst, MS56XX_SPI_OPERATION, 0),                       \
-	 .calc_coefficients = COND_CODE_1( \
-			IS_EQ(DT_INST_PROP(inst, chip), MS56XX_5607_CHIP), \
-			(MS56XX_CONFIG_07_COEFFICIENTS), (MS56XX_CONFIG_11_COEFFICIENTS)) }
+	 .calc_coefficients = MS56XX_CONFIG_07_COEFFICIENTS }
 
 /* Initializes a struct ms56xx_config for an instance on a I2C bus. */
-#define MS56XX_CONFIG_I2C(inst)                                                                    \
+#define MS56XX_CONFIG_MS5607_I2C(inst)                                                             \
 	{.tf = &ms56xx_i2c_transfer_function,                                                      \
 	 .bus_cfg.i2c = I2C_DT_SPEC_INST_GET(inst),                                                \
-	 .calc_coefficients = COND_CODE_1( \
-			IS_EQ(DT_INST_PROP(inst, chip), MS56XX_5607_CHIP), \
-			(MS56XX_CONFIG_07_COEFFICIENTS), (MS56XX_CONFIG_11_COEFFICIENTS)) }
+	 .calc_coefficients = MS56XX_CONFIG_07_COEFFICIENTS }
 
 /* Initializes calculation coefficients based on chip version. */
 
@@ -357,16 +354,48 @@ static const struct sensor_driver_api ms56xx_api_funcs = {
 	}
 
 /*
- * Main instantiation macro, which selects the correct bus-specific
+ * Main instantiation macro for MS5607, which selects the correct bus-specific
  * instantiation macros for the instance.
  */
-#define MS56XX_DEFINE(inst)                                                                        \
-	static struct ms56xx_data ms56xx_data_##inst;                                              \
-	static const struct ms56xx_config ms56xx_config_##inst = COND_CODE_1( \
-		DT_INST_ON_BUS(inst, spi), (MS56XX_CONFIG_SPI(inst)), (MS56XX_CONFIG_I2C(inst)));                    \
-	SENSOR_DEVICE_DT_INST_DEFINE(inst, ms56xx_init, NULL, &ms56xx_data_##inst,                 \
-				     &ms56xx_config_##inst, POST_KERNEL,                           \
+#define MS56XX_DEFINE_MS5607(inst)                                                                \
+	static struct ms56xx_data ms56xx_data_ms5607_##inst;                                      \
+	static const struct ms56xx_config ms56xx_config_ms5607_##inst = COND_CODE_1(              \
+		DT_INST_ON_BUS(inst, spi),                                                        \
+		(MS56XX_CONFIG_MS5607_SPI(inst)),                                                 \
+		(MS56XX_CONFIG_MS5607_I2C(inst)));                                                \
+	SENSOR_DEVICE_DT_INST_DEFINE(inst, ms56xx_init, NULL, &ms56xx_data_ms5607_##inst,         \
+				     &ms56xx_config_ms5607_##inst, POST_KERNEL,                 \
 				     CONFIG_SENSOR_INIT_PRIORITY, &ms56xx_api_funcs);
 
-/* Create the struct device for every status "okay" node in the devicetree. */
-DT_INST_FOREACH_STATUS_OKAY(MS56XX_DEFINE)
+/* Create the struct device for every status "okay" MS5607 node in the devicetree. */
+DT_INST_FOREACH_STATUS_OKAY(MS56XX_DEFINE_MS5607)
+
+/* Add MS5611 Config */
+#define MS56XX_CONFIG_MS5611_SPI(inst)                                                             \
+	{.tf = &ms56xx_spi_transfer_function,                                                      \
+	 .bus_cfg.spi = SPI_DT_SPEC_INST_GET(inst, MS56XX_SPI_OPERATION, 0),                       \
+	 .calc_coefficients = MS56XX_CONFIG_11_COEFFICIENTS }
+
+#define MS56XX_CONFIG_MS5611_I2C(inst)                                                             \
+	{.tf = &ms56xx_i2c_transfer_function,                                                      \
+	 .bus_cfg.i2c = I2C_DT_SPEC_INST_GET(inst),                                                \
+	 .calc_coefficients = MS56XX_CONFIG_11_COEFFICIENTS }
+
+/*
+ * Main instantiation macro for MS5611, which selects the correct bus-specific
+ * instantiation macros for the instance.
+ */
+#define MS56XX_DEFINE_MS5611(inst)                                                                \
+	static struct ms56xx_data ms56xx_data_ms5611_##inst;                                      \
+	static const struct ms56xx_config ms56xx_config_ms5611_##inst = COND_CODE_1(              \
+		DT_INST_ON_BUS(inst, spi),                                                        \
+		(MS56XX_CONFIG_MS5611_SPI(inst)),                                                 \
+		(MS56XX_CONFIG_MS5611_I2C(inst)));                                                \
+	SENSOR_DEVICE_DT_INST_DEFINE(inst, ms56xx_init, NULL, &ms56xx_data_ms5611_##inst,         \
+				     &ms56xx_config_ms5611_##inst, POST_KERNEL,                 \
+				     CONFIG_SENSOR_INIT_PRIORITY, &ms56xx_api_funcs);
+
+/* Now build for MS5611 instances */
+#undef DT_DRV_COMPAT
+#define DT_DRV_COMPAT DT_DRV_COMPAT_MS5611
+DT_INST_FOREACH_STATUS_OKAY(MS56XX_DEFINE_MS5611)

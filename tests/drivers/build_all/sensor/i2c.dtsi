@@ -174,8 +174,9 @@ test_i2c_max44009: max44009@16 {
 };
 
 test_i2c_ms5607: ms5607@17 {
-	compatible = "meas,ms5607";
+	compatible = "meas,ms56xx";
 	reg = <0x17>;
+	chip = <07>;
 };
 
 test_i2c_ms5837_02ba: ms5837@18 {
@@ -1295,4 +1296,10 @@ test_i2c_icm45686: icm45686@b1 {
 	compatible = "invensense,icm45686";
 	reg = <0xb1>;
 	int-gpios = <&test_gpio 0 0>;
+};
+
+test_i2c_ms5611: ms5611@b2 {
+	compatible = "meas,ms56xx";
+	reg = <0x17>;
+	chip = <11>;
 };
